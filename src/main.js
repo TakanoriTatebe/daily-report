@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc } from "firebase/firestore";
+import { fetchHistoryData } from "./fetchHistoryData";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,34 +21,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Cloud Firestoreから取得したデータを表示する
-const fetchHistoryData = async () => {
-  let tags = "";
-
-  // reportsコレクションのデータを取得
-  const querySnapshot = await getDocs(collection(db, "reports"));
-
-  // 取得したデータをテーブルの形式に合わせてHTMLに挿入
-  querySnapshot.forEach((doc) => {
-    console.log(`${doc.id} => `, doc.data());
-
-    tags += `<tr>
-      <td>${doc.data().date}</td>
-      <td>${doc.data().name}</td>
-      <td>${doc.data().work}</td>
-      <td>${doc.data().comment}</td>
-    </tr>`;
-  });
-
-  const history = document.getElementById("js-history");
-
-  if (history) {
-    history.innerHTML = tags;
-  }
-};
-
-// Cloud Firestoreから取得したデータを表示する
 if (document.getElementById("js-history")) {
-  fetchHistoryData();
+  fetchHistoryData(getDocs, collection, db);
 }
 
 // Cloud Firestoreにデータを送信する
